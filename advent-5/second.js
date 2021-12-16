@@ -1,0 +1,75 @@
+const fs = require('fs');
+
+const data = fs
+  .readFileSync('data', { encoding: 'utf-8', flag: 'r' })
+  .trim()
+  .split('\n')
+  .map((ea) => ea.replace(' -> ', ',').split(','))
+  .map((ea) => {
+    return {
+      p1: { x: parseFloat(ea[0]), y: parseFloat(ea[1]) },
+      p2: { x: parseFloat(ea[2]), y: parseFloat(ea[3]) },
+    };
+  })
+  .filter(
+    (ea) =>
+      ea.p1.x === ea.p2.x ||
+      ea.p1.y === ea.p2.y ||
+      ea.p2.y - ea.p1.y === ea.p2.x - ea.p1.x ||
+      ea.p2.y - ea.p1.y === -(ea.p2.x - ea.p1.x)
+  );
+
+const gridSize = 1000;
+const grid = Array(gridSize)
+  .fill(0)
+  .map((x) => Array(gridSize).fill(0));
+
+const printGrid = (grid) => {
+  for (let i = 0; i < grid.length; i++) {
+    let str = '';
+    for (let j = 0; j < grid[i].length; j++) {
+      str += grid[i][j] + ' ';
+    }
+    console.log(str);
+  }
+};
+
+const drawLine = (p1, p2) => {
+  if (p2.y - p1.y === p2.x - p1.x) {
+    const [xStart, xEnd] = p1.x > p2.x ? [p2.x, p1.x] : [p1.x, p2.x];
+    const [yStart, yEnd] = p1.y > p2.y ? [p2.y, p1.y] : [p1.y, p2.y];
+    for (let [i, j] = [yStart, xStart]; i <= yEnd; i++, j++) {
+      grid[i][j]++;
+    }
+  } else if (p2.y - p1.y === -(p2.x - p1.x)) {
+    const [xStart, xEnd] = p1.x > p2.x ? [p2.x, p1.x] : [p1.x, p2.x];
+    const [yStart, yEnd] = p1.y > p2.y ? [p2.y, p1.y] : [p1.y, p2.y];
+    for (let [i, j] = [yEnd, xStart]; i >= yStart; i--, j++) {
+      grid[i][j]++;
+    }
+  } else {
+    const [xStart, xEnd] = p1.x > p2.x ? [p2.x, p1.x] : [p1.x, p2.x];
+    const [yStart, yEnd] = p1.y > p2.y ? [p2.y, p1.y] : [p1.y, p2.y];
+    for (let i = yStart; i <= yEnd; i++) {
+      for (let j = xStart; j <= xEnd; j++) {
+        grid[i][j]++;
+      }
+    }
+  }
+};
+
+for (let line of data) {
+  drawLine(line.p1, line.p2);
+}
+
+// printGrid(grid);
+
+let count = '';
+for (const line of grid) {
+  for (const ea of line) {
+    if (ea > 1) {
+      count++;
+    }
+  }
+}
+console.log(count);
