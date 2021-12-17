@@ -6,8 +6,8 @@ let data = fs
   .split('\n')
   .map((ea) => ea.split(''));
 
-const checkOpenChars = (openChars, char, charOpen) => {
-  if (openChars.at(-1) !== charOpen) {
+const checkOpenChars = (openChars, char, charPair) => {
+  if (openChars.at(-1) !== charPair) {
     return char;
   } else {
     openChars.pop();
