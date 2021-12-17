@@ -6,8 +6,15 @@ let data = fs
   .split('\n')
   .map((ea) => ea.split(''));
 
-const checkOpenChars = (openChars, char, charPair) => {
-  if (openChars.at(-1) !== charPair) {
+charPairs = {
+  ')': '(',
+  ']': '[',
+  '}': '{',
+  '>': '<',
+};
+
+const checkOpenChars = (openChars, char) => {
+  if (openChars.at(-1) !== charPairs[char]) {
     return char;
   } else {
     openChars.pop();
@@ -21,25 +28,10 @@ for (let [idx, line] of data.entries()) {
   let openChars = [];
 
   for (let char of line) {
-    switch (char) {
-      case '(':
-      case '[':
-      case '<':
-      case '{':
-        openChars.push(char);
-        break;
-      case ')':
-        corruptedChar = checkOpenChars(openChars, char, '(');
-        break;
-      case ']':
-        corruptedChar = checkOpenChars(openChars, char, '[');
-        break;
-      case '>':
-        corruptedChar = checkOpenChars(openChars, char, '<');
-        break;
-      case '}':
-        corruptedChar = checkOpenChars(openChars, char, '{');
-        break;
+    if (char in charPairs) {
+      corruptedChar = checkOpenChars(openChars, char);
+    } else {
+      openChars.push(char);
     }
     if (corruptedChar) break;
   }
@@ -60,53 +52,38 @@ const popChar = (charToRemove, charArr) => {
   charArr.reverse();
 };
 
+const charPairsRev = {
+  '(': ')',
+  '[': ']',
+  '{': '}',
+  '<': '>',
+};
+
 const completionString = [];
 for (let line of data) {
   const openChars = [];
 
   for (let char of line) {
-    switch (char) {
-      case '(':
-        openChars.push(')');
-        break;
-      case '[':
-        openChars.push(']');
-        break;
-      case '<':
-        openChars.push('>');
-        break;
-      case '{':
-        openChars.push('}');
-        break;
-      case ')':
-      case ']':
-      case '>':
-      case '}':
-        popChar(char, openChars);
-        break;
+    if (char in charPairs) {
+      popChar(char, openChars);
+    } else {
+      openChars.push(charPairsRev[char]);
     }
   }
 
   completionString.push(openChars.reverse());
 }
 
+const scoreTable = {
+  ')': 1,
+  ']': 2,
+  '}': 3,
+  '>': 4,
+};
+
 const scores = [];
 for (const line of completionString) {
-  scores.push(
-    line.reduce((prev, curr) => {
-      prev = prev * 5;
-      switch (curr) {
-        case ')':
-          return prev + 1;
-        case ']':
-          return prev + 2;
-        case '}':
-          return prev + 3;
-        case '>':
-          return prev + 4;
-      }
-    }, 0)
-  );
+  scores.push(line.reduce((prev, curr) => prev * 5 + scoreTable[curr], 0));
 }
 
 scores.sort((a, b) => a - b);
