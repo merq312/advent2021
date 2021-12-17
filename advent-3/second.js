@@ -1,13 +1,13 @@
-const fs = require("fs");
+const fs = require('fs');
 
 const data = fs
-  .readFileSync("data", { encoding: "utf-8", flag: "r" })
+  .readFileSync('data', { encoding: 'utf-8', flag: 'r' })
   .trim()
-  .split("\n")
-  .map((ea) => ea.split("").map(parseFloat));
+  .split('\n')
+  .map((ea) => ea.split('').map(parseFloat));
 
 let oxygen = JSON.parse(JSON.stringify(data));
-let carbondioxide = JSON.parse(JSON.stringify(data));
+let c02 = JSON.parse(JSON.stringify(data));
 
 for (let i = 0; i < oxygen[0].length; i++) {
   let ones = 0;
@@ -30,13 +30,14 @@ for (let i = 0; i < oxygen[0].length; i++) {
     break;
   }
 }
-for (let i = 0; i < carbondioxide[0].length; i++) {
+
+for (let i = 0; i < c02[0].length; i++) {
   let ones = 0;
   let zeros = 0;
   let which = 0;
 
-  for (let j = 0; j < carbondioxide.length; j++) {
-    carbondioxide[j][i] ? ones++ : zeros++;
+  for (let j = 0; j < c02.length; j++) {
+    c02[j][i] ? ones++ : zeros++;
   }
 
   if (zeros > ones) {
@@ -45,16 +46,11 @@ for (let i = 0; i < carbondioxide[0].length; i++) {
     which = 0;
   }
 
-  carbondioxide = carbondioxide.filter((ea) => ea[i] === which);
+  c02 = c02.filter((ea) => ea[i] === which);
 
-  if (carbondioxide.length === 1) {
+  if (c02.length === 1) {
     break;
   }
 }
 
-console.log(oxygen);
-console.log(carbondioxide);
-
-console.log(
-  parseInt(oxygen[0].join(""), 2) * parseInt(carbondioxide[0].join(""), 2)
-);
+console.log(parseInt(oxygen[0].join(''), 2) * parseInt(c02[0].join(''), 2));
