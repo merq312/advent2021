@@ -18,16 +18,6 @@ const grid = Array(gridSize)
   .fill(0)
   .map((x) => Array(gridSize).fill(0));
 
-const printGrid = (grid) => {
-  for (let i = 0; i < grid.length; i++) {
-    let str = '';
-    for (let j = 0; j < grid[i].length; j++) {
-      str += grid[i][j] + ' ';
-    }
-    console.log(str);
-  }
-};
-
 const drawLine = (p1, p2) => {
   const [xStart, xEnd] = p1.x > p2.x ? [p2.x, p1.x] : [p1.x, p2.x];
   const [yStart, yEnd] = p1.y > p2.y ? [p2.y, p1.y] : [p1.y, p2.y];
@@ -42,9 +32,6 @@ const drawLine = (p1, p2) => {
 for (let line of data) {
   drawLine(line.p1, line.p2);
 }
-
-// console.log(data);
-// printGrid(grid);
 
 let count = '';
 for (const line of grid) {
