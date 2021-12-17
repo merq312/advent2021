@@ -25,10 +25,6 @@ const printGrid = (grid) => {
   console.log();
 };
 
-// printGrid(grids[0])
-// printGrid(grids[1])
-// printGrid(grids[2])
-
 const checkBingo = (grid) => {
   for (let i = 0; i < 5; i++) {
     if (
@@ -65,20 +61,16 @@ const calculateScore = (grid) => {
   return sum;
 };
 
-let shouldBreak = false;
+let isBingo = false;
 for (let i = 0; i < draws.length; i++) {
   grids = grids.map((grid) => grid.map((ea) => (ea === draws[i] ? -1 : ea)));
 
   for (let grid of grids) {
     if (checkBingo(grid)) {
       console.log(calculateScore(grid) * draws[i]);
-      shouldBreak = true;
+      isBingo = true;
       break;
     }
   }
-  if (shouldBreak) break;
+  if (isBingo) break;
 }
-
-// printGrid(grids[0]);
-// printGrid(grids[1]);
-// printGrid(grids[2]);
