@@ -70,20 +70,19 @@ void second(std::vector<std::string> &data) {
 
     std::function<void(std::string, std::vector<std::string>, std::string)> findPaths =
             [&findPaths, &paths, &getConnections](const std::string &node, std::vector<std::string> path,
-                                                  const std::string& selected) {
+                                                  const std::string &selected) {
                 auto conns = getConnections(node);
-                for (const auto& conn: conns) {
+                for (const auto &conn: conns) {
                     auto connLower = getLowerCaseString(conn);
 
                     if (conn != connLower || std::find(path.begin(), path.end(), conn) == std::end(path)) {
                         path.emplace_back(conn);
                         if (conn == "end") {
                             paths.insert(path);
-                            path.pop_back();
                         } else {
                             findPaths(conn, path, selected);
-                            path.pop_back();
                         }
+                        path.pop_back();
                     } else if (conn == selected) {
                         path.emplace_back(conn);
                         findPaths(conn, path, "");
@@ -133,17 +132,16 @@ void first(std::vector<std::string> &data) {
     std::function<void(std::string, std::vector<std::string>)> findPaths =
             [&findPaths, &paths, &getConnections](const std::string &node, std::vector<std::string> path) {
                 auto conns = getConnections(node);
-                for (const auto& conn: conns) {
+                for (const auto &conn: conns) {
                     auto connLower = getLowerCaseString(conn);
                     if (conn != connLower || std::find(path.begin(), path.end(), conn) == std::end(path)) {
                         path.emplace_back(conn);
                         if (conn == "end") {
                             paths.push_back(path);
-                            path.pop_back();
                         } else {
                             findPaths(conn, path);
-                            path.pop_back();
                         }
+                        path.pop_back();
                     }
                 }
             };
